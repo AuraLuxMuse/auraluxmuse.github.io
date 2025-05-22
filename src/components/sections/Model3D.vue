@@ -1,6 +1,11 @@
-<script lang="ts" setup>
-import { vue3dLoader } from "vue-3d-loader";
-
+<script>
+export default {
+  data() {
+    return {
+      imagePath: 'pipeline.png'  // Path to the pipeline image
+    }
+  }
+}
 </script>
 
 <template>
@@ -8,57 +13,35 @@ import { vue3dLoader } from "vue-3d-loader";
     <el-divider />
 
     <el-row justify="center">
-      <h1 class="section-title">3D Model</h1>
+      <h1 class="section-title">Overview of the AuraLuxMuse Pipeline</h1>
     </el-row>
 
+    <!-- Insert image and caption -->
     <el-row justify="center">
       <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="12">
-        <p>
-        Thanks to
-        <a href="https://github.com/king2088/vue-3d-loader" target="_blank">vue-3d-loader</a>,
-        we can visualize these 3D models here. It supports dae, fbx, gltf(glb), obj, ply, stl models.
-        </p>
-        <el-row justify="space-evenly">
-          <el-col :xs="16" :sm="10" >
-            <div class="threed-container">
-              <vue3dLoader
-              filePath="./model3d/obj/male02.obj"
-              mtlPath="./model3d/obj/male02.mtl"
-              outputEncoding="sRGB"
-              :cameraPosition="{ x: 0, y: 0, z: 300 }"
-              :scale="{ x: 1, y: 1, z: 1 }"
-              :position="{ x: 0, y: 0, z: 0 }"
-              :rotation="{ x: 0, y: 0, z: 0 }"
-              :enableDamping="true"
-              :dampingFactor="0.05"
-              :backgroundColor="'#f2f2f2'"
-            />
-            </div>
-          </el-col>
-          <el-col :xs="16" :sm="10" >
-            <vue3dLoader
-              filePath="./model3d/ply/Lucy100k.ply"
-              :cameraPosition="{ x: 100, y: 200, z: 3000 }"
-              :scale="{ x: 1, y: 1, z: 1 }"
-              :position="{ x: 100, y: 100, z: 100 }"
-              :rotation="{ x: 0, y: 3, z: 0 }"
-              :enableDamping="true"
-              :dampingFactor="0.05"
-              :backgroundColor="0xeeeeee"
-            ></vue3dLoader>
-          </el-col>
-        </el-row>
-        
-        
+        <figure>
+          <img :src="imagePath" class="chart-image" alt="AuraLuxMuse Pipeline" />
+          <figcaption class="image-caption">
+            Music and lighting data are individually preprocessed before entering LAMP for contrastive learning. Preference representations are injected via the PAMoE to enhance cue sequence encoding. The learned music and cue representations jointly inform the cue retriever, which selects Top-K lighting cues from the cue sequence corpus. Retrieval is guided by Metadata from the Metadata Predictor.
+          </figcaption>
+        </figure>
       </el-col>
     </el-row>
   </div>
 </template>
 
-<style>
-.viewer-canvas {
-  width: 100% !important;
-  height: auto !important;
-  aspect-ratio: 1 / 1 !important;
+<style scoped>
+.chart-image {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+  object-fit: contain;
+}
+
+.image-caption {
+  font-size: 14px;
+  color: #666;
+  margin-top: 10px;
+  line-height: 1.5;
 }
 </style>
