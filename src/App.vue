@@ -8,6 +8,21 @@ const actionButtons = [
   { label: 'Dataset', icon: '/page_image/hug.png', href: '#' },
 ]
 
+const videos = [
+  {
+    title: 'Demo Video: Manual Design vs. AuraLuxMuse',
+    src: '/video/Manual_AuraLuxMuse.mp4',
+  },
+  {
+    title: 'Demo Video: AuraLuxMuse across Music Styles',
+    src: '/video/Music_Styles.mp4',
+  },
+  {
+    title: 'Demo Video: Virtual and Real-world Applications',
+    src: '/video/Virtual_Real_World.mp4',
+  },
+]
+
 const datasetScenarios = [
   {
     title: 'Concert Events',
@@ -95,20 +110,17 @@ onMounted(() => {
         </div>
       </section>
 
-      <section class="panel fade-in">
-        <h2 class="section-title">Demo Videos</h2>
-        <div class="video-placeholder">
-          <p>
-            The current source folder includes the full page layout and image assets, but the
-            referenced demo videos were not present alongside the provided files.
-          </p>
-          <p>
-            This section is ready for
-            <code>Manual_AuraLuxMuse.mp4</code>,
-            <code>Music_Styles.mp4</code>, and
-            <code>Virtual_Real_World.mp4</code>
-            once they are available.
-          </p>
+      <section
+        v-for="video in videos"
+        :key="video.title"
+        class="panel fade-in"
+      >
+        <h2 class="section-title">{{ video.title }}</h2>
+        <div class="video-frame">
+          <video controls preload="metadata" playsinline>
+            <source :src="video.src" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
       </section>
 
@@ -454,7 +466,7 @@ h1 {
   color: var(--gold);
 }
 
-.video-placeholder,
+.video-frame,
 .teaser-container,
 .stack-card {
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -462,12 +474,10 @@ h1 {
   border-radius: 22px;
 }
 
-.video-placeholder {
-  padding: 28px;
-  text-align: center;
+.video-frame {
+  padding: 20px;
 }
 
-.video-placeholder p,
 .intro,
 .body-text,
 .abstract,
@@ -477,7 +487,6 @@ h1 {
   line-height: 1.85;
 }
 
-.video-placeholder p,
 .intro,
 .body-text,
 .abstract {
@@ -486,9 +495,15 @@ h1 {
   font-size: 1.08rem;
 }
 
-.video-placeholder p:last-child,
 .body-text:last-child {
   margin-bottom: 0;
+}
+
+.video-frame video {
+  display: block;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.25);
 }
 
 .teaser-container {
@@ -603,7 +618,7 @@ h1 {
   }
 
   .teaser-container,
-  .video-placeholder,
+  .video-frame,
   .stack-card {
     padding: 16px;
     border-radius: 18px;
@@ -614,7 +629,6 @@ h1 {
     justify-content: center;
   }
 
-  .video-placeholder p,
   .intro,
   .body-text,
   .abstract,
