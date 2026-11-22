@@ -1,15 +1,872 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="keywords" content="Project Template, Project Page">
-    <meta name="description" content="academic-project-page-template-vue">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel ="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    <title>Academic Project Page Template Vue</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+    <title>AuraLuxMuse: Aesthetic Stage Lighting Design with Music and Expert Guidance</title>
+    <meta name="description" content="AuraLuxMuse turns music into editable, console-ready stage lighting cues. SIGGRAPH Asia 2026 Conference Papers.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AuraLuxMuse: Adaptive Fusion Modeling for Aesthetic Stage Lighting Design with Music and Expert Guidance">
+    <meta property="og:description" content="SIGGRAPH Asia 2026 Conference Papers. Music in, console-ready stage lighting cues out.">
+    <meta property="og:image" content="assets/img/teaser.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 12 60h40z' fill='%23FFD700' opacity='.85'/%3E%3Ccircle cx='32' cy='8' r='6' fill='%23fff'/%3E%3C/svg%3E">
+    <style>
+        @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+        @font-face { font-family: 'Orbitron'; src: url('assets/fonts/Orbitron.woff2') format('woff2'); font-weight: 400 900; font-display: swap; }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --gold: #FFD700;
+            --white: #ffffff;
+            --soft-white: #f5f5f5;
+            --warm-gold: #ffea80;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* 动态背景灯光效果 */
+        .background-lights {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .light-beam {
+            position: absolute;
+            width: 2px;
+            height: 100vh;
+            background: linear-gradient(to bottom, 
+                rgba(255, 215, 0, 0.6) 0%,
+                rgba(255, 215, 0, 0.2) 30%,
+                transparent 70%);
+            animation: sweep 8s infinite ease-in-out;
+            transform-origin: top center;
+        }
+        
+        .light-beam:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            background: linear-gradient(to bottom, 
+                rgba(255, 100, 150, 0.6) 0%,
+                rgba(255, 100, 150, 0.2) 30%,
+                transparent 70%);
+        }
+        
+        .light-beam:nth-child(2) {
+            left: 30%;
+            animation-delay: 2s;
+            background: linear-gradient(to bottom, 
+                rgba(100, 200, 255, 0.6) 0%,
+                rgba(100, 200, 255, 0.2) 30%,
+                transparent 70%);
+        }
+        
+        .light-beam:nth-child(3) {
+            left: 50%;
+            animation-delay: 4s;
+        }
+        
+        .light-beam:nth-child(4) {
+            left: 70%;
+            animation-delay: 6s;
+            background: linear-gradient(to bottom, 
+                rgba(150, 255, 100, 0.6) 0%,
+                rgba(150, 255, 100, 0.2) 30%,
+                transparent 70%);
+        }
+        
+        .light-beam:nth-child(5) {
+            left: 90%;
+            animation-delay: 1s;
+            background: linear-gradient(to bottom, 
+                rgba(255, 150, 100, 0.6) 0%,
+                rgba(255, 150, 100, 0.2) 30%,
+                transparent 70%);
+        }
+        
+        @keyframes sweep {
+            0%, 100% { transform: rotate(-15deg); opacity: 0.3; }
+            50% { transform: rotate(15deg); opacity: 0.8; }
+        }
+        
+        /* 容器和布局 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .submission-info {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(255, 215, 0, 0.9);
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* 标题部分 */
+        .header {
+            text-align: center;
+            padding: 80px 0 60px;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            border-radius: 20px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(255, 215, 0, 0.05) 0%,
+                rgba(255, 100, 150, 0.05) 25%,
+                rgba(100, 200, 255, 0.05) 50%,
+                rgba(150, 255, 100, 0.05) 75%,
+                rgba(255, 150, 100, 0.05) 100%);
+            border-radius: 20px;
+            animation: colorShift 10s infinite ease-in-out;
+        }
+        
+        @keyframes colorShift {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+        
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #FFD700, #FF6B9D, #64C8FF, #96FF64);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease-in-out infinite;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .subtitle {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.6rem;
+            font-weight: 400;
+            background: linear-gradient(45deg, #e0e0e0, #FFD700, #64C8FF);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: subtitleShift 8s ease-in-out infinite;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            position: relative;
+            z-index: 2;
+            letter-spacing: 0.5px;
+        }
+        
+        @keyframes subtitleShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* 按钮样式 */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            position: relative;
+            z-index: 2;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            color: #FFD700;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .action-buttons a:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #FFD700;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .action-buttons a img {
+            width: 20px;
+            height: 20px;
+            background: white;
+            padding: 3px;
+            border-radius: 4px;
+            box-shadow: none;
+        }
+        
+        /* 视频部分 */
+        .video-section {
+            text-align: center;
+            margin: 60px 0;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* 内容部分 */
+        .content-section {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 40px 0;
+            padding: 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FF6B9D, #64C8FF, #96FF64);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .teaser-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        /* 所有图片添加白色背景 */
+        .teaser-image, 
+        .example img,
+        img {
+            background-color: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .teaser-image {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 20px;
+        }
+        
+        /* 增大caption字体并占据全长（白金渐变与微光） */
+        .caption {
+            font-family: 'Inter', sans-serif;
+            font-style: italic;
+            color: var(--soft-white);
+            background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,215,0,0.90));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            letter-spacing: 0.3px;
+            margin-top: 25px;
+            width: 100%;
+            text-align: justify;
+            font-weight: 500;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.12);
+        }
+        
+        .abstract {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: var(--soft-white);
+            background: linear-gradient(90deg, rgba(255,255,255,0.92), rgba(255,223,87,0.92));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: justify;
+            letter-spacing: 0.25px;
+            margin: 30px 0;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.10);
+        }
+        
+        .abstract strong {
+            color: var(--gold);
+            font-weight: 600;
+            background: none;
+            -webkit-text-fill-color: var(--gold);
+            -webkit-background-clip: initial;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+        }
+        
+        /* 通用段落样式 - 占据全长 */
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+            text-align: justify;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        /* Qualitative Results - 全宽度垂直排列 */
+        .qualitative-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        
+        .qualitative-example {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .qualitative-example:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+        
+        .qualitative-example img {
+            width: 100%;
+            max-width: 100%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        .qualitative-example .caption {
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            font-style: normal;
+            background: none;
+            -webkit-text-fill-color: var(--gold);
+            -webkit-background-clip: initial;
+        }
+        
+        /* 其他图片网格 */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+            align-items: start;
+        }
+        
+        .example {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .example:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .example img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+        
+        .example .caption {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: var(--soft-white);
+            background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,215,0,0.90));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.1rem;
+            text-align: justify;
+            letter-spacing: 0.3px;
+            margin-top: auto;
+        }
+        
+        /* 列表样式 */
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 20px 0;
+            width: 100%;
+        }
+        
+        li {
+            padding: 15px 20px;
+            border-left: 3px solid #FFD700;
+            margin: 15px 0;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 0 10px 10px 0;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #e0e0e0;
+            text-align: justify;
+        }
+        
+        li strong {
+            color: #FFD700;
+        }
+        
+        /* Real-World Applications - 修改为全宽度垂直排列 */
+        .real-world-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .real-world-example {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .real-world-example:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .real-world-example img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .real-world-example .caption {
+            font-weight: 500;
+            color: #d0d0d0;
+            font-size: 1.2rem;
+            text-align: justify;
+            line-height: 1.7;
+            margin-top: 25px;
+        }
+
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .content-section {
+                padding: 30px 20px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .image-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .qualitative-grid {
+                gap: 30px;
+            }
+            
+            .qualitative-example {
+                padding: 20px;
+            }
+            
+            .caption {
+                font-size: 1.1rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            li {
+                font-size: 1rem;
+                padding: 12px 15px;
+            }
+            
+            .action-buttons {
+                gap: 15px;
+            }
+            
+            .action-buttons a {
+                padding: 10px 20px;
+                font-size: 0.8rem;
+            }
+            
+            .action-buttons a img {
+                width: 18px;
+                height: 18px;
+            }
+        }
+        
+        /* 滚动动画 */
+        .authors, .affiliations { text-align: center; }
+        .authors { margin: 18px auto 6px; max-width: 980px; font-size: 1.12rem; line-height: 1.8; color: #fff; }
+        .authors span { white-space: nowrap; margin: 0 10px; }
+        .authors sup, .affiliations sup { font-size: .7em; color: var(--warm-gold); }
+        .affiliations { max-width: 980px; margin: 0 auto; font-size: .95rem; line-height: 1.7; color: #cfd3e6; }
+        .affiliations span { white-space: nowrap; margin: 0 9px; }
+        .action-buttons a.soon { opacity: .45; pointer-events: none; }
+        .action-buttons a.soon::after { content: " (soon)"; font-size: .75em; }
+        .bibtex { position: relative; }
+        .bibtex pre { background: rgba(0,0,0,.45); border: 1px solid rgba(255,215,0,.25); border-radius: 12px;
+            padding: 22px 24px; overflow-x: auto; font-size: .9rem; line-height: 1.55; color: #f5f5f5;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }
+        .bibtex button { position: absolute; top: 12px; right: 12px; background: var(--gold); color: #111;
+            border: 0; border-radius: 8px; padding: 6px 14px; font-weight: 600; cursor: pointer; }
+        .bibtex button:focus-visible, .action-buttons a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+        .site-footer { text-align: center; color: #9aa0b8; font-size: .85rem; padding: 10px 20px 50px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+            .fade-in { opacity: 1; transform: none; }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景灯光效果 -->
+    <div class="background-lights">
+        <div class="light-beam"></div>
+        <div class="light-beam"></div>
+        <div class="light-beam"></div>
+        <div class="light-beam"></div>
+        <div class="light-beam"></div>
+    </div>
+    
+    <div class="container">
+        <!-- 标题部分 -->
+        <header class="header fade-in">
+            <h1>AuraLuxMuse: Adaptive Fusion Modeling for Aesthetic Stage Lighting Design with Music and Expert Guidance</h1>
+            
+            <div class="submission-info">SIGGRAPH Asia 2026 Conference Papers</div>
+
+            <div class="authors">
+                <span>Junyu Deng<sup>1</sup></span> <span>Jiale Cao<sup>1</sup></span> <span>Mengtian Li<sup>1,2,*</sup></span> <span>Zhongxia Ji<sup>3</sup></span>
+                <span>Ruhua Chen<sup>3</sup></span> <span>Yiyi He<sup>4</sup></span> <span>Guangnan Ye<sup>1</sup></span> <span>Zuo Hu<sup>3,*</sup></span>
+            </div>
+            <div class="affiliations">
+                <span><sup>1</sup>Fudan University</span> <span><sup>2</sup>Shanghai Film Academy, Shanghai University</span>
+                <span><sup>3</sup>Shanghai Theatre Academy</span> <span><sup>4</sup>Nanjing University of the Arts</span>
+                <span><sup>*</sup>Corresponding authors</span>
+            </div>
+
+
+            <div class="action-buttons">
+                <a href="https://doi.org/10.1145/3829340.3842259" target="_blank" rel="noopener">
+                    <img src="assets/icons/paper.png" alt=""> Paper
+                </a>
+                <a href="https://arxiv.org/abs/2610.11792" target="_blank" rel="noopener">
+                    <img src="assets/icons/arxiv.png" alt=""> arXiv
+                </a>
+                <!-- CODE LINK: replace href and remove class="soon" when the repository is public -->
+                <a href="#" class="soon" aria-disabled="true">
+                    <img src="assets/icons/github.png" alt=""> Code
+                </a>
+                <!-- DATASET LINK: replace href and remove class="soon" when Musilux is released -->
+                <a href="#" class="soon" aria-disabled="true">
+                    <img src="assets/icons/hug.png" alt=""> Dataset
+                </a>
+            </div>
+        </header>
+        
+        <!-- 视频部分 -->
+        <section class="video-section fade-in">
+            <h2 class="section-title">Demo Video: Manual Design vs. AuraLuxMuse</h2>
+            <div class="video-container">
+                <video controls playsinline preload="metadata" title="AuraLuxMuse demo video">
+                    <source src="videos/Manual_AuraLuxMuse.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+
+        <section class="video-section fade-in">
+            <h2 class="section-title">Demo Video: AuraLuxMuse across Music Styles</h2>
+            <div class="video-container">
+                <video controls playsinline preload="metadata" title="AuraLuxMuse demo video">
+                    <source src="videos/Music_Styles.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+
+        <section class="video-section fade-in">
+            <h2 class="section-title">Demo Video: Virtual and Real-world Applications</h2>
+            <div class="video-container">
+                <video controls playsinline preload="metadata" title="AuraLuxMuse demo video">
+                    <source src="videos/Virtual_Real_World.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+        
+        <!-- Teaser图片 -->
+        <section class="content-section fade-in">
+            <h2 class="section-title">Workflow: Traditional vs. AuraLuxMuse</h2>
+            <div class="teaser-container">
+                <img src="assets/img/teaser.webp" alt="AuraLuxMuse Teaser" class="teaser-image">
+                <div class="caption">
+                    In the conventional pipeline, designers manually decompose the input music into artistic components, followed by iterative design, precise time alignment and parameter input into the lighting console. In contrast, AuraLuxMuse automates this process by leveraging deep audio feature extraction and contrastive representation learning. The system guides the generation of lighting parameters, which are seamlessly delivered to the console for real-time aesthetic lighting production.
+                </div>
+            </div>
+        </section>
+        
+        <!-- 摘要部分 -->
+        <section class="content-section fade-in">
+            <h2 class="section-title">Abstract</h2>
+            <div class="abstract">
+                In this work, we present <strong>AuraLuxMuse</strong>, a novel system for automated aesthetic stage lighting generation that integrates expert knowledge, multimodal representation learning and preference-adaptive modeling. Lighting design in live performance settings requires the seamless translation of musical structure, rhythm and thematic intent into dynamic lighting behaviors. However, traditional workflows remain time-consuming, labor-intensive and difficult to transfer or scale. Mimicking the traditional stage lighting workflow, AuraLuxMuse replaces expert-driven analysis with deep learning-based feature extraction and decomposes lighting attributes into structured representations, which are jointly learned alongside music features under the supervision of curated metadata. At the heart of AuraLuxMuse are two key modules: <strong>LAMP</strong> (Lighting-Aligned Music Pretraining), which performs contrastive learning between audio and lighting cues to enable alignment, and <strong>PAMoE</strong> (Preference-Adaptive Mixture of Experts), which conditions lighting generation on designer intent through a gated ensemble of style-specific expert networks. To support training and evaluation, we introduce <strong>Musilux</strong>, the first dataset of paired musical audio and professional lighting cue sequences under diverse live performance scenarios. Experimental results, including objective metrics and subjective evaluation, demonstrate that AuraLuxMuse produces stage lighting that is visually cohesive, semantically aligned and artistically expressive, advancing the frontier of AI-assisted aesthetic stage design.
+            </div>
+        </section>
+        
+        <!-- Framework Overview -->
+        <section class="content-section fade-in">
+            <h2 class="section-title">Framework Overview</h2>
+            <div class="teaser-container">
+                <img src="assets/img/pipeline.webp" loading="lazy" alt="Framework Pipeline" class="teaser-image">
+                <div class="caption">
+                    Music and lighting data are individually preprocessed before entering LAMP for contrastive learning. Preference representations are injected via the PAMoE to enhance cue sequence encoding. The learned music and cue representations jointly inform the cue retriever, which selects Top-K lighting cues from the cue sequence corpus. Retrieval is guided by Metadata from the Metadata Predictor. The Lighting Encoder adopts a transformer-based architecture with four self-attention heads and the Music Encoder is composed of a VGGish network with multilayer perceptrons, all selected based on ablation studies. The Metadata Predictor integrates Temporal Convolutional Network density-count module and Softplus activation to enforce non-negativity. 
+                </div>
+            </div>
+        </section>
+        
+        <!-- Dataset -->
+        <section class="content-section fade-in">
+            <h2 class="section-title">Dataset: Musilux Construction Procedure</h2>
+            <div class="teaser-container">
+                <img src="assets/img/dataset_procedure.webp" loading="lazy" alt="Dataset Construction" class="teaser-image">
+                <div class="caption">
+                    <p>Initially, music and lighting cues are collected, and the distribution across scenarios is shown in the collection procedure. Alignment is performed at both the internal level of cues and the cross-modal level to synchronize music and lighting data. The resulting aligned sequences are then aggregated into Cue Sequence Corpus, constituting our Musilux Dataset. The dataset is composed of three scenarios:</p>
+                    <ul>
+                        <li><strong>Concert Events</strong>: Liveshow performances where lighting dynamically adapts to the musical structure, emphasizing synchronization.</li>
+                        <li><strong>Drama Shows</strong>: Theatrical productions employing lighting to enhance narrative and emotional engagement</li>
+                        <li><strong>Entertainment Art</strong>: Broadcasts, promotional events, and multimedia presentations with lighting building a specific atmosphere.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section class="content-section fade-in">
+            <h2 class="section-title">Performance of AuraLuxMuse across Lighting Styles</h2>
+            <div class="teaser-container">
+                <img src="assets/img/Stage_Demo.webp" loading="lazy" alt="Lighting results across color harmony, brightness and zone distribution" class="teaser-image">
+                <div class="caption">
+                    Demonstration of Stages among Lighting Styles. Visualization of lighting configurations across varying levels of color harmony, brightness control and zone distribution. Definition of terminologies in stage lighting are provided in the brackets.
+                </div>
+            </div>
+        </section>
+
+        <!-- Qualitative Results -->
+        <section class="content-section fade-in">
+            <h2 class="section-title">Qualitative Results</h2>
+            <p style="text-align: center; margin-bottom: 40px; color: #e0e0e0;">Below are examples of outputs generated by AuraLuxMuse, compared with those manually designed by human designers:</p>
+            
+            <div class="qualitative-grid">
+                <div class="qualitative-example">
+                    <img src="assets/img/concert.webp" loading="lazy" alt="Concert Event">
+                    <div class="caption">Concert Event</div>
+                </div>
+                
+                <div class="qualitative-example">
+                    <img src="assets/img/drama.webp" loading="lazy" alt="Drama Show">
+                    <div class="caption">Drama Show</div>
+                </div>
+                
+                <div class="qualitative-example">
+                    <img src="assets/img/entertain.webp" loading="lazy" alt="Entertainment Art">
+                    <div class="caption">Entertainment Art</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Real-World Applications -->
+        <section class="content-section fade-in">
+            <h2 class="section-title">Real-World Applications</h2>
+            <p>The implementation is conducted using the stage lighting console provided by MA Lighting. For parameter adjustments, cue imports, and output operations, we utilize the grandMA2 system for lighting interaction and the MA3D platform for virtual visualization.</p>
+            
+            <div class="real-world-grid">
+                <div class="real-world-example">
+                    <img src="assets/img/interface.webp" loading="lazy" alt="GrandMA2 Interface">
+                    <div class="caption">Interface of grandMA2 Software. The software suite offers real-time visualization, cue management, and timeline editing for complex lighting shows.</div>
+                </div>
+                
+                <div class="real-world-example">
+                    <img src="assets/img/fixture.webp" loading="lazy" alt="Lighting Fixture">
+                    <div class="caption">Professional Stage Lighting Fixtures. Stage lighting fixtures can be classified according to the morphology of their emitted light into four distinct classes: imaging light, spotlight, soft light, and floodlight.</div>
+                </div>
+
+            </div>
+            
+            <p>Deploying AuraLuxMuse-generated lighting sequences on a real-world stage using the grandMA2 console involves preparing XML files, importing them into the console via a USB drive, and configuring execution logic through the console's macro commands. The sequence and timecode are assigned to specific executors for synchronized playback. Once configured, the user starts the show by triggering the timecode playback.</p>
+        </section>
+
+        <section class="content-section fade-in" id="bibtex">
+            <h2 class="section-title">BibTeX</h2>
+            <div class="bibtex">
+                <button type="button" id="copy-bib">Copy</button>
+                <pre id="bib">@inproceedings{deng2026auraluxmuse,
+  title     = {AuraLuxMuse: Adaptive Fusion Modeling for Aesthetic Stage Lighting Design with Music and Expert Guidance},
+  author    = {Deng, Junyu and Cao, Jiale and Li, Mengtian and Ji, Zhongxia and Chen, Ruhua and He, Yiyi and Ye, Guangnan and Hu, Zuo},
+  booktitle = {SIGGRAPH Asia 2026 Conference Papers (SA Conference Papers '26)},
+  year      = {2026},
+  address   = {Kuala Lumpur, Malaysia},
+  publisher = {ACM},
+  doi       = {10.1145/3829340.3842259}
+}</pre>
+            </div>
+        </section>
+    </div>
+
+    <footer class="site-footer">AuraLuxMuse &middot; SIGGRAPH Asia 2026, Kuala Lumpur</footer>
+    
+    <script>
+        // Hide a demo-video section until its .mp4 has been uploaded to videos/
+        document.querySelectorAll('.video-section video').forEach(v => {
+            const src = v.querySelector('source');
+            const hide = () => v.closest('.video-section').style.display = 'none';
+            if (src) src.addEventListener('error', hide);
+            v.addEventListener('error', hide);
+        });
+        document.getElementById('copy-bib').addEventListener('click', e => {
+            navigator.clipboard.writeText(document.getElementById('bib').textContent)
+                .then(() => { e.target.textContent = 'Copied'; setTimeout(() => e.target.textContent = 'Copy', 1500); });
+        });
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // 页面加载时显示第一个元素
+        window.addEventListener('load', () => {
+            document.querySelector('.header').classList.add('visible');
+        });
+    </script>
+</body>
 </html>
